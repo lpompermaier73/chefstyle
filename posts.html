@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todas as Receitas - ChefStyle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">Chef<span>Style</span></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="posts.html">Todas as Receitas</a></li>
+                    <li><a href="index.html#sobre">Sobre</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Recipes Section -->
+    <section class="recipes-section">
+        <h2 class="section-title">Todas as Receitas</h2>
+        
+        <!-- Search Bar -->
+        <div style="max-width: 600px; margin: 0 auto 3rem; text-align: center;">
+            <input 
+                type="text" 
+                id="searchInput" 
+                placeholder="Buscar receitas por nome, ingrediente ou categoria..."
+                style="width: 100%; padding: 1rem; border: 2px solid var(--light-gray); border-radius: 50px; font-size: 1rem; outline: none; transition: border-color 0.3s;"
+                onkeyup="filterRecipes()"
+            >
+        </div>
+
+        <div class="recipe-grid" id="allRecipesGrid">
+            <!-- Receitas serão carregadas dinamicamente -->
+        </div>
+
+        <div id="noResults" style="text-align: center; padding: 3rem; display: none;">
+            <p style="font-size: 1.2rem; color: #666;">Nenhuma receita encontrada. Tente outra busca!</p>
+        </div>
+    </section>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget">
+        <button class="chat-button" onclick="toggleChat()" id="chatButton">
+            🤖
+        </button>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">
+            <h3>Chef Virtual</h3>
+            <button class="chat-close" onclick="toggleChat()">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message">
+                <div class="message-avatar">👨‍🍳</div>
+                <div class="message-content">
+                    Olá! Procurando por alguma receita específica? Posso te ajudar a encontrar ou sugerir algo novo!
+                    <div class="quick-suggestions">
+                        <div class="suggestion-chip" onclick="sendQuickMessage('Receita fácil para iniciantes')">Para iniciantes</div>
+                        <div class="suggestion-chip" onclick="sendQuickMessage('Receita rápida')">Receita rápida</div>
+                        <div class="suggestion-chip" onclick="sendQuickMessage('Sobremesa especial')">Sobremesa</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input 
+                type="text" 
+                class="chat-input" 
+                id="chatInput" 
+                placeholder="Digite sua pergunta..."
+                onkeypress="handleKeyPress(event)"
+            >
+            <button class="chat-send" onclick="sendMessage()" id="sendButton">➤</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 ChefStyle. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="recipes-data.js"></script>
+    <script src="chat.js"></script>
+    <script>
+        let allRecipes = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllRecipes();
+        });
+
+        function loadAllRecipes() {
+            allRecipes = recipesDatabase;
+            displayRecipes(allRecipes);
+        }
+
+        function displayRecipes(recipes) {
+            const grid = document.getElementById('allRecipesGrid');
+            const noResults = document.getElementById('noResults');
+            grid.innerHTML = '';
+
+            if (recipes.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            } else {
+                noResults.style.display = 'none';
+            }
+
+            recipes.forEach(recipe => {
+                const card = document.createElement('a');
+                card.href = `recipe.html?id=${recipe.id}`;
+                card.className = 'recipe-card';
+                
+                card.innerHTML = `
+                    <div class="recipe-image">${recipe.emoji}</div>
+                    <div class="recipe-content">
+                        <div class="recipe-category">${recipe.category}</div>
+                        <h3 class="recipe-title">${recipe.title}</h3>
+                        <p class="recipe-excerpt">${recipe.excerpt}</p>
+                        <div class="recipe-meta">
+                            <span>⏱️ ${recipe.time}</span>
+                            <span>👤 ${recipe.servings}</span>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function filterRecipes() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (searchTerm === '') {
+                displayRecipes(allRecipes);
+                return;
+            }
+
+            const filtered = allRecipes.filter(recipe => {
+                // Search in title
+                if (recipe.title.toLowerCase().includes(searchTerm)) return true;
+                
+                // Search in category
+                if (recipe.category.toLowerCase().includes(searchTerm)) return true;
+                
+                // Search in ingredients
+                if (recipe.ingredients.some(ing => ing.toLowerCase().includes(searchTerm))) return true;
+                
+                // Search in excerpt
+                if (recipe.excerpt.toLowerCase().includes(searchTerm)) return true;
+                
+                return false;
+            });
+
+            displayRecipes(filtered);
+        }
+
+        // Add enter key support for search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                filterRecipes();
+            }
+        });
+
+        // Add focus styling
+        document.getElementById('searchInput').addEventListener('focus', function() {
+            this.style.borderColor = 'var(--accent)';
+        });
+
+        document.getElementById('searchInput').addEventListener('blur', function() {
+            this.style.borderColor = 'var(--light-gray)';
+        });
+    </script>
+</body>
+</html>

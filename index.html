@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ChefStyle - Blog de culinária com assistente de IA integrado">
+    <title>ChefStyle - Cozinhe com Estilo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">Chef<span>Style</span></div>
+            <nav>
+                <ul>
+                    <li><a href="#receitas">Receitas</a></li>
+                    <li><a href="posts.html">Todos os Posts</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Cozinhe com Estilo</h1>
+            <p>Receitas deliciosas e um assistente de IA para te ajudar na cozinha</p>
+        </div>
+    </section>
+
+    <!-- AI Promo -->
+    <section class="ai-promo">
+        <div class="ai-promo-content">
+            <h2>Conheça o Chef Virtual</h2>
+            <p>Seu assistente culinário inteligente! Pergunte sobre receitas, substitua ingredientes, adapte porções e muito mais.</p>
+            <button class="btn-ai" onclick="openChat()">Conversar com o Chef Virtual</button>
+        </div>
+    </section>
+
+    <!-- Recipes Section -->
+    <section class="recipes-section" id="receitas">
+        <h2 class="section-title">Receitas em Destaque</h2>
+        <div class="recipe-grid" id="recipeGrid">
+            <!-- Receitas serão carregadas dinamicamente -->
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="sobre">
+        <div class="about-content">
+            <h2 class="section-title">Sobre o ChefStyle</h2>
+            <p>Bem-vindo ao ChefStyle! Este é um espaço dedicado à paixão pela culinária, onde compartilho receitas testadas, dicas práticas e muito sabor.</p>
+            <p>Agora com inteligência artificial integrada para te ajudar a cozinhar melhor!</p>
+        </div>
+    </section>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget">
+        <button class="chat-button" onclick="toggleChat()" id="chatButton">
+            🤖
+        </button>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">
+            <h3>Chef Virtual</h3>
+            <button class="chat-close" onclick="toggleChat()">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message">
+                <div class="message-avatar">👨‍🍳</div>
+                <div class="message-content">
+                    Olá! Sou o Chef Virtual do ChefStyle. Como posso te ajudar na cozinha hoje?
+                    <div class="quick-suggestions">
+                        <div class="suggestion-chip" onclick="sendQuickMessage('Sugira uma receita rápida')">Receita rápida</div>
+                        <div class="suggestion-chip" onclick="sendQuickMessage('Tenho frango e batata, o que posso fazer?')">O que fazer com...</div>
+                        <div class="suggestion-chip" onclick="sendQuickMessage('Como fazer uma massa perfeita?')">Dicas de técnica</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input 
+                type="text" 
+                class="chat-input" 
+                id="chatInput" 
+                placeholder="Digite sua pergunta..."
+                onkeypress="handleKeyPress(event)"
+            >
+            <button class="chat-send" onclick="sendMessage()" id="sendButton">➤</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 ChefStyle. Todos os direitos reservados.</p>
+        <p>Blog de culinária com inteligência artificial integrada</p>
+    </footer>
+
+    <script src="recipes-data.js"></script>
+    <script src="chat.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChefStyle - Seu Assistente Culinário Inteligente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a1a1a;
+            --accent: #d4541e;
+            --secondary: #f4f1ea;
+            --cream: #faf8f3;
+            --dark-green: #2d5f4d;
+            --light-gray: #e8e4dc;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--cream);
+            color: var(--primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background: var(--primary);
+            color: var(--cream);
+            padding: 2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        nav a {
+            color: var(--cream);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--dark-green) 0%, #1a3a2e 100%);
+            color: var(--cream);
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(212, 84, 30, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.9;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* AI Assistant Promo */
+        .ai-promo {
+            background: var(--accent);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-promo::before {
+            content: '🤖';
+            position: absolute;
+            font-size: 15rem;
+            opacity: 0.05;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .ai-promo-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-promo h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-promo p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .btn-ai {
+            background: white;
+            color: var(--accent);
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-ai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Recipe Grid */
+        .recipes-section {
+            max-width: 1400px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: var(--accent);
+            margin: 1rem auto 0;
+        }
+
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .recipe-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .recipe-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, var(--light-gray), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recipe-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%);
+        }
+
+        .recipe-content {
+            padding: 1.5rem;
+        }
+
+        .recipe-category {
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .recipe-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .recipe-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+
+        .recipe-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .chat-button {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), #e67350);
+            color: white;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 6px 25px rgba(212, 84, 30, 0.4);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(212, 84, 30, 0.5);
+        }
+
+        .chat-button.active {
+            background: var(--dark-green);
+        }
+
+        .chat-container {
+            position: fixed;
+            bottom: 110px;
+            right: 2rem;
+            width: 420px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .chat-container.active {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--dark-green), #1a3a2e);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .chat-close:hover {
+            opacity: 1;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            background: #fafafa;
+        }
+
+        .chat-message {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.8rem;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+
+        .message-content {
+            background: white;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            max-width: 75%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .chat-message.user .message-avatar {
+            background: var(--dark-green);
+        }
+
+        .chat-message.user .message-content {
+            background: var(--dark-green);
+            color: white;
+        }
+
+        .chat-input-area {
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid var(--light-gray);
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 25px;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent);
+        }
+
+        .chat-send {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-send:hover {
+            background: #e67350;
+            transform: scale(1.05);
+        }
+
+        .chat-send:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: flex;
+            gap: 0.3rem;
+            padding: 0.5rem;
+        }
+
+        .loading span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading span:nth-child(1) { animation-delay: -0.32s; }
+        .loading span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: var(--cream);
+            padding: 3rem 2rem;
+            margin-top: 6rem;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .recipe-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-container {
+                width: calc(100vw - 2rem);
+                right: 1rem;
+                left: 1rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+        }
+
+        .quick-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .suggestion-chip {
+            background: var(--secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--light-gray);
+        }
+
+        .suggestion-chip:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">Chef<span>Style</span></div>
+            <nav>
+                <ul>
+                    <li><a href="#receitas">Receitas</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Cozinhe com Estilo</h1>
+            <p>Receitas deliciosas e um assistente de IA para te ajudar na cozinha</p>
+        </div>
+    </section>
+
+    <!-- AI Promo -->
+    <section class="ai-promo">
+        <div class="ai-promo-content">
+            <h2>Conheça o Chef Virtual</h2>
+            <p>Seu assistente culinário inteligente! Pergunte sobre receitas, substitua ingredientes, adapte porções e muito mais.</p>
+            <button class="btn-ai" onclick="openChat()">Conversar com o Chef Virtual</button>
+        </div>
+    </section>
+
+    <!-- Recipes Section -->
+    <section class="recipes-section" id="receitas">
+        <h2 class="section-title">Receitas em Destaque</h2>
+        <div class="recipe-grid">
+            <div class="recipe-card">
+                <div class="recipe-image">🍝</div>
+                <div class="recipe-content">
+                    <div class="recipe-category">Massas</div>
+                    <h3 class="recipe-title">Carbonara Autêntica</h3>
+                    <p>A verdadeira carbonara italiana, cremosa e irresistível. Sem creme de leite!</p>
+                    <div class="recipe-meta">
+                        <span>⏱️ 20 min</span>
+                        <span>👤 4 porções</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recipe-card">
+                <div class="recipe-image">🥗</div>
+                <div class="recipe-content">
+                    <div class="recipe-category">Saladas</div>
+                    <h3 class="recipe-title">Salada Caesar Premium</h3>
+                    <p>Alface crocante, molho caseiro e croutons perfeitos. Um clássico reinventado.</p>
+                    <div class="recipe-meta">
+                        <span>⏱️ 15 min</span>
+                        <span>👤 2 porções</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recipe-card">
+                <div class="recipe-image">🍰</div>
+                <div class="recipe-content">
+                    <div class="recipe-category">Sobremesas</div>
+                    <h3 class="recipe-title">Brownie de Chocolate Belga</h3>
+                    <p>Intenso, úmido e com pedaços generosos de chocolate. Pecado irresistível!</p>
+                    <div class="recipe-meta">
+                        <span>⏱️ 45 min</span>
+                        <span>👤 8 porções</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recipe-card">
+                <div class="recipe-image">🍤</div>
+                <div class="recipe-content">
+                    <div class="recipe-category">Frutos do Mar</div>
+                    <h3 class="recipe-title">Risoto de Camarão</h3>
+                    <p>Cremoso, aromático e repleto de camarões suculentos. Elegância na mesa.</p>
+                    <div class="recipe-meta">
+                        <span>⏱️ 35 min</span>
+                        <span>👤 4 porções</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recipe-card">
+                <div class="recipe-image">🥙</div>
+                <div class="recipe-content">
+                    <div class="recipe-category">Pratos Rápidos</div>
+                    <h3 class="recipe-title">Wrap Mediterrâneo</h3>
+                    <p>Fresco, saudável e pronto em minutos. Perfeito para almoços corridos.</p>
+                    <div class="recipe-meta">
+                        <span>⏱️ 10 min</span>
+                        <span>👤 2 porções</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recipe-card">
+                <div class="recipe-image">🍔</div>
+                <div class="recipe-content">
+                    <div class="recipe-category">Hambúrgueres</div>
+                    <h3 class="recipe-title">Smash Burger Gourmet</h3>
+                    <p>Carne bem temperada, queijo derretido e molho especial. Impossível resistir.</p>
+                    <div class="recipe-meta">
+                        <span>⏱️ 25 min</span>
+                        <span>👤 4 porções</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget">
+        <button class="chat-button" onclick="toggleChat()" id="chatButton">
+            🤖
+        </button>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">
+            <h3>Chef Virtual</h3>
+            <button class="chat-close" onclick="toggleChat()">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message">
+                <div class="message-avatar">👨‍🍳</div>
+                <div class="message-content">
+                    Olá! Sou o Chef Virtual do ChefStyle. Como posso te ajudar na cozinha hoje?
+                    <div class="quick-suggestions">
+                        <div class="suggestion-chip" onclick="sendQuickMessage('Sugira uma receita rápida')">Receita rápida</div>
+                        <div class="suggestion-chip" onclick="sendQuickMessage('Tenho frango e batata, o que posso fazer?')">O que fazer com...</div>
+                        <div class="suggestion-chip" onclick="sendQuickMessage('Como fazer carbonara?')">Como fazer...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input 
+                type="text" 
+                class="chat-input" 
+                id="chatInput" 
+                placeholder="Digite sua pergunta..."
+                onkeypress="handleKeyPress(event)"
+            >
+            <button class="chat-send" onclick="sendMessage()" id="sendButton">➤</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 ChefStyle. Todos os direitos reservados.</p>
+        <p>Blog de culinária com inteligência artificial integrada</p>
+    </footer>
+
+    <script>
+        // Recipe database - simula o conteúdo do blog
+        const recipeDatabase = {
+            "carbonara": {
+                name: "Carbonara Autêntica",
+                ingredients: ["400g de espaguete", "200g de guanciale ou bacon", "4 gemas", "100g de parmesão", "Pimenta preta"],
+                steps: [
+                    "Cozinhe o espaguete em água fervente com sal",
+                    "Corte o guanciale em cubos e frite até ficar crocante",
+                    "Misture as gemas com o parmesão ralado",
+                    "Escorra a massa e reserve 1 xícara da água do cozimento",
+                    "Misture a massa quente com o guanciale, desligue o fogo",
+                    "Adicione a mistura de ovos e parmesão, mexendo rapidamente",
+                    "Adicione água do cozimento aos poucos até obter cremosidade",
+                    "Finalize com pimenta preta moída na hora"
+                ],
+                time: "20 minutos",
+                servings: "4 porções"
+            },
+            "brownie": {
+                name: "Brownie de Chocolate Belga",
+                ingredients: ["200g chocolate meio amargo", "150g manteiga", "3 ovos", "200g açúcar", "100g farinha", "Pitada de sal"],
+                steps: [
+                    "Preaqueça o forno a 180°C",
+                    "Derreta o chocolate com a manteiga em banho-maria",
+                    "Bata os ovos com açúcar até dobrar de volume",
+                    "Misture o chocolate derretido aos ovos",
+                    "Adicione a farinha e o sal, misture delicadamente",
+                    "Despeje em forma untada",
+                    "Asse por 25-30 minutos (deve ficar úmido no centro)",
+                    "Deixe esfriar antes de cortar"
+                ],
+                time: "45 minutos",
+                servings: "8 porções"
+            },
+            "risoto": {
+                name: "Risoto de Camarão",
+                ingredients: ["300g arroz arbóreo", "400g camarão", "1L caldo de peixe", "1 cebola", "2 dentes de alho", "Vinho branco", "Parmesão", "Manteiga"],
+                steps: [
+                    "Refogue a cebola e alho na manteiga",
+                    "Adicione o arroz e toste por 2 minutos",
+                    "Adicione vinho branco e deixe evaporar",
+                    "Vá adicionando o caldo quente, uma concha por vez",
+                    "Mexa constantemente por cerca de 18 minutos",
+                    "Quando o arroz estiver quase pronto, adicione os camarões",
+                    "Finalize com parmesão e manteiga",
+                    "Sirva imediatamente"
+                ],
+                time: "35 minutos",
+                servings: "4 porções"
+            }
+        };
+
+        function toggleChat() {
+            const container = document.getElementById('chatContainer');
+            const button = document.getElementById('chatButton');
+            container.classList.toggle('active');
+            button.classList.toggle('active');
+        }
+
+        function openChat() {
+            const container = document.getElementById('chatContainer');
+            const button = document.getElementById('chatButton');
+            container.classList.add('active');
+            button.classList.add('active');
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendQuickMessage(message) {
+            const input = document.getElementById('chatInput');
+            input.value = message;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Disable send button
+            const sendButton = document.getElementById('sendButton');
+            sendButton.disabled = true;
+            
+            // Show loading
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'chat-message';
+            loadingDiv.id = 'loading-message';
+            loadingDiv.innerHTML = `
+                <div class="message-avatar">👨‍🍳</div>
+                <div class="message-content">
+                    <div class="loading">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
+            document.getElementById('chatMessages').appendChild(loadingDiv);
+            scrollToBottom();
+            
+            try {
+                // Call Anthropic API
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 1000,
+                        system: `Você é o Chef Virtual, um assistente culinário amigável e experiente do blog ChefStyle. 
+                        
+Você tem acesso às seguintes receitas do blog:
+${JSON.stringify(recipeDatabase, null, 2)}
+
+Suas responsabilidades:
+- Ajudar os usuários com dúvidas culinárias
+- Sugerir receitas baseadas nos ingredientes que eles têm
+- Explicar técnicas de cozinha
+- Adaptar receitas para restrições alimentares
+- Dar dicas de substituições de ingredientes
+- Ajustar porções de receitas
+
+Seja sempre simpático, use emojis ocasionalmente, e mantenha um tom descontraído mas profissional. Se uma receita específica do blog for mencionada, use os detalhes exatos do banco de dados.`,
+                        messages: [
+                            { role: 'user', content: message }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Remove loading
+                document.getElementById('loading-message').remove();
+                
+                // Add AI response
+                const aiMessage = data.content[0].text;
+                addMessage(aiMessage, 'ai');
+                
+            } catch (error) {
+                // Remove loading
+                document.getElementById('loading-message').remove();
+                
+                // Add error message
+                addMessage('Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente.', 'ai');
+                console.error('Error:', error);
+            } finally {
+                sendButton.disabled = false;
+            }
+        }
+
+        function addMessage(text, sender) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            
+            const avatar = sender === 'user' ? '👤' : '👨‍🍳';
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${avatar}</div>
+                <div class="message-content">${text}</div>
+            `;
+            
+            messagesDiv.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            const messagesDiv = document.getElementById('chatMessages');
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>

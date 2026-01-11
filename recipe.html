@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receita - ChefStyle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">Chef<span>Style</span></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="posts.html">Todas as Receitas</a></li>
+                    <li><a href="index.html#sobre">Sobre</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Recipe Content -->
+    <div class="post-header">
+        <div class="recipe-category" id="recipeCategory"></div>
+        <h1 class="post-title" id="recipeTitle"></h1>
+        <div class="post-meta" id="recipeMeta"></div>
+    </div>
+
+    <div class="post-content">
+        <div id="recipeHero" style="text-align: center; font-size: 8rem; margin: 2rem 0;"></div>
+        
+        <p id="recipeExcerpt" style="font-size: 1.2rem; color: #666; margin-bottom: 3rem;"></p>
+
+        <h2>Ingredientes</h2>
+        <ul id="ingredientsList"></ul>
+
+        <h2>Modo de Preparo</h2>
+        <ol id="instructionsList"></ol>
+
+        <div id="recipeTips" style="background: var(--secondary); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+            <h3 style="margin-top: 0; color: var(--accent);">💡 Dica do Chef</h3>
+            <p id="tipsContent"></p>
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="index.html" class="back-link">← Voltar para Home</a>
+        </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget">
+        <button class="chat-button" onclick="toggleChat()" id="chatButton">
+            🤖
+        </button>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">
+            <h3>Chef Virtual</h3>
+            <button class="chat-close" onclick="toggleChat()">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message">
+                <div class="message-avatar">👨‍🍳</div>
+                <div class="message-content">
+                    Olá! Posso te ajudar com essa receita? Pergunte sobre substituições, técnicas ou qualquer dúvida!
+                    <div class="quick-suggestions">
+                        <div class="suggestion-chip" onclick="sendQuickMessage('Como adaptar esta receita?')">Adaptar receita</div>
+                        <div class="suggestion-chip" onclick="sendQuickMessage('Substituições possíveis?')">Substituições</div>
+                        <div class="suggestion-chip" onclick="sendQuickMessage('Dicas extras?')">Dicas extras</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input 
+                type="text" 
+                class="chat-input" 
+                id="chatInput" 
+                placeholder="Digite sua pergunta..."
+                onkeypress="handleKeyPress(event)"
+            >
+            <button class="chat-send" onclick="sendMessage()" id="sendButton">➤</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 ChefStyle. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="recipes-data.js"></script>
+    <script src="chat.js"></script>
+    <script>
+        // Load recipe from URL parameter
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const recipeId = urlParams.get('id');
+            
+            if (recipeId) {
+                loadRecipe(parseInt(recipeId));
+            } else {
+                document.getElementById('recipeTitle').textContent = 'Receita não encontrada';
+            }
+        });
+
+        function loadRecipe(id) {
+            const recipe = recipesDatabase.find(r => r.id === id);
+            
+            if (!recipe) {
+                document.getElementById('recipeTitle').textContent = 'Receita não encontrada';
+                return;
+            }
+
+            // Update page title
+            document.title = `${recipe.title} - ChefStyle`;
+
+            // Fill in recipe details
+            document.getElementById('recipeCategory').textContent = recipe.category;
+            document.getElementById('recipeTitle').textContent = recipe.title;
+            document.getElementById('recipeHero').textContent = recipe.emoji;
+            document.getElementById('recipeExcerpt').textContent = recipe.excerpt;
+            
+            // Meta information
+            const metaDiv = document.getElementById('recipeMeta');
+            metaDiv.innerHTML = `
+                <span>⏱️ ${recipe.time}</span>
+                <span>👤 ${recipe.servings}</span>
+            `;
+
+            // Ingredients list
+            const ingredientsList = document.getElementById('ingredientsList');
+            recipe.ingredients.forEach(ingredient => {
+                const li = document.createElement('li');
+                li.textContent = ingredient;
+                ingredientsList.appendChild(li);
+            });
+
+            // Instructions list
+            const instructionsList = document.getElementById('instructionsList');
+            recipe.instructions.forEach(instruction => {
+                const li = document.createElement('li');
+                li.textContent = instruction;
+                instructionsList.appendChild(li);
+            });
+
+            // Tips
+            if (recipe.tips) {
+                document.getElementById('tipsContent').textContent = recipe.tips;
+            } else {
+                document.getElementById('recipeTips').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
