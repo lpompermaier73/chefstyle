@@ -1,3 +1,6 @@
+// Configuração da API Backend
+const API_ENDPOINT = 'https://chefstyle-backend.vercel.app/api/chat';
+
 // Chat AI Logic
 function toggleChat() {
     const container = document.getElementById('chatContainer');
@@ -57,80 +60,42 @@ async function sendMessage() {
     scrollToBottom();
     
     try {
-        // Prepare recipes context for AI
-        const recipesContext = recipesDatabase.map(recipe => ({
+        // Prepare recipes context (enviar apenas as primeiras 50 receitas)
+        const recipesContext = recipesDatabase.slice(0, 50).map(recipe => ({
             title: recipe.title,
             category: recipe.category,
-            time: recipe.time,
-            servings: recipe.servings,
             ingredients: recipe.ingredients,
             instructions: recipe.instructions,
-            tips: recipe.tips
+            excerpt: recipe.excerpt
         }));
 
-        // Call Anthropic API
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        // Call Backend API
+        const response = await fetch(API_ENDPOINT, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                model: 'claude-sonnet-4-20250514',
-                max_tokens: 1000,
-                system: `Você é o Chef Virtual, um assistente culinário amigável e experiente do blog ChefStyle. 
-                
-Você tem acesso ao seguinte banco de receitas do blog:
-${JSON.stringify(recipesContext, null, 2)}
-
-Suas responsabilidades:
-- Ajudar os usuários com dúvidas culinárias
-- Sugerir receitas baseadas nos ingredientes que eles têm em casa
-- Explicar técnicas de cozinha de forma clara e didática
-- Adaptar receitas para restrições alimentares (vegano, sem glúten, sem lactose, etc.)
-- Dar dicas de substituições de ingredientes
-- Ajustar porções de receitas proporcionalmente
-- Oferecer conselhos sobre armazenamento e conservação de alimentos
-- Explicar termos culinários
-- Sugerir harmonizações e acompanhamentos
-
-Características da sua personalidade:
-- Sempre simpático e encorajador
-- Use emojis ocasionalmente para deixar a conversa mais leve
-- Mantenha um tom descontraído mas profissional
-- Seja paciente com iniciantes na cozinha
-- Celebre as conquistas culinárias dos usuários
-- Use linguagem clara e acessível, evitando jargões desnecessários
-
-Se uma receita específica do blog for mencionada, use os detalhes exatos do banco de dados. 
-
-Quando sugerir substituições ou adaptações:
-- Explique o porquê da substituição
-- Mencione se haverá alguma mudança no resultado final
-- Ofereça alternativas quando possível
-
-Para questões sobre ingredientes disponíveis:
-- Pergunte detalhes se necessário (quantidades, restrições)
-- Sugira 2-3 opções de receitas
-- Indique qual receita do blog é mais adequada
-
-Sempre termine suas respostas de forma que incentive o usuário a cozinhar e experimentar!`,
-                messages: [
-                    { role: 'user', content: message }
-                ]
+                message: message,
+                recipes: recipesContext
             })
         });
 
+        // Remove loading
+        const loadingMsg = document.getElementById('loading-message');
+        if (loadingMsg) loadingMsg.remove();
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
         
-        // Remove loading
-        document.getElementById('loading-message').remove();
-        
         // Add AI response
-        if (data.content && data.content[0] && data.content[0].text) {
-            const aiMessage = data.content[0].text;
-            addMessage(aiMessage, 'ai');
+        if (data.success && data.message) {
+            addMessage(data.message, 'ai');
         } else {
-            addMessage('Desculpe, tive um problema ao processar sua mensagem. Pode tentar reformular?', 'ai');
+            addMessage('Desculpe, tive um problema ao processar sua mensagem. Pode tentar reformular? 😅', 'ai');
         }
         
     } catch (error) {
@@ -139,8 +104,8 @@ Sempre termine suas respostas de forma que incentive o usuário a cozinhar e exp
         if (loadingMsg) loadingMsg.remove();
         
         // Add error message
+        console.error('Chat error:', error);
         addMessage('Ops! Parece que estou tendo dificuldades técnicas no momento. 😅 Tente novamente em alguns instantes!', 'ai');
-        console.error('Error:', error);
     } finally {
         sendButton.disabled = false;
     }
