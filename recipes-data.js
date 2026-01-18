@@ -5,6 +5,7 @@ const recipesDatabase = [
     {
         id: 1,
         title: "Tentação de morango e amora",
+        image: "https://lpompermaier73.github.io/chefstyle/images/linguado.jpg",
         category: "Sobremesas",
         emoji: "🍰",
         excerpt: "Ingredientes• 5 claras • 10 colheres (sopa) de açúcar• 1 lata de leite condensado• 2 copos de leite• 4 gemas• 2 colheres (sopa) de maisena• 1 caixinha de morangos• 1 caixinha de amoras• 200 g de choco...",
