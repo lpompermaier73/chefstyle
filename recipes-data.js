@@ -4096,6 +4096,7 @@ const recipesDatabase = [
         id: 147,
         title: "Pizza de roqueford, panceta e nozes",
         category: "pizza profissional",
+        image: "https://lpompermaier73.github.io/chefstyle/images/IMG_3569.heic",
         emoji: "🍽️",
         excerpt: "Deliciosa receita de pizza de roqueford, panceta e nozes",
         time: "30 min",
